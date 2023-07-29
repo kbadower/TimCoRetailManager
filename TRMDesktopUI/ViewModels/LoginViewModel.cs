@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using TRMDesktopUI.Helpers;
 using TRMDesktopUI.Models;
 
@@ -13,7 +16,9 @@ namespace TRMDesktopUI.ViewModels
     {
         private string _username;
         private string _password;
+        private string _errorBox;
         private IAPIHelper _apiHelper;
+
 
         public LoginViewModel(IAPIHelper apiHelper)
         {
@@ -42,6 +47,16 @@ namespace TRMDesktopUI.ViewModels
             }
         }
 
+        public string ErrorBox
+        {
+            get { return _errorBox; }
+            set
+            {
+                _errorBox = value;
+                NotifyOfPropertyChange(() => ErrorBox);
+            }
+        }
+
         public bool CanLogIn
         {
             get
@@ -59,12 +74,16 @@ namespace TRMDesktopUI.ViewModels
 
         public async Task LogIn()
         {
+            ErrorBox = string.Empty;
+
             try
             {
                 var result = await _apiHelper.Authenticate(UserName, Password);
             }
             catch (Exception ex)
             {
+                ErrorBox = "Your credentials are wrong!";
+                Password = string.Empty;
                 Console.WriteLine(ex.Message);
             }
         }
