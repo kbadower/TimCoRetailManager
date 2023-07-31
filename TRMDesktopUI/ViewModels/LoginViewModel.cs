@@ -1,14 +1,10 @@
 ﻿using Caliburn.Micro;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using TRMDesktopUI.Helpers;
 using TRMDesktopUI.Models;
+using TRMDesktopUILibrary.Api;
+using TRMDesktopUILibrary.Models;
 
 namespace TRMDesktopUI.ViewModels
 {
@@ -78,7 +74,8 @@ namespace TRMDesktopUI.ViewModels
 
             try
             {
-                var result = await _apiHelper.Authenticate(UserName, Password);
+                AuthenticatedUserModel result = await _apiHelper.Authenticate(UserName, Password);
+                await _apiHelper.GetLoggedInUserInfo(result.Access_Token);
             }
             catch (Exception ex)
             {

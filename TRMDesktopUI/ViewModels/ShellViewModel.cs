@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 
@@ -11,7 +12,9 @@ namespace TRMDesktopUI.ViewModels
     {
         LoginViewModel _loginViewModel;
 
-        public ShellViewModel(LoginViewModel loginViewModel)
+        public event EventHandler<LoginViewModel> Login;
+
+        public ShellViewModel(LoginViewModel loginViewModel, IEventAggregator eventAggregator)
         {
             _loginViewModel = loginViewModel;
             ActivateItemAsync(_loginViewModel);
