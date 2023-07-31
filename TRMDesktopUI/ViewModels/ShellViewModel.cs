@@ -5,19 +5,30 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Caliburn.Micro;
+using TRMDesktopUILibrary.Enums;
 
 namespace TRMDesktopUI.ViewModels
 {
-    public class ShellViewModel : Conductor<object>
+    public class ShellViewModel : Conductor<object>, IHandle<LogInEventModel>
     {
-        LoginViewModel _loginViewModel;
+        SalesViewModel _salesViewModel;
+        SimpleContainer _container;
+        private readonly IEventAggregator _eventAggregator;
 
         public event EventHandler<LoginViewModel> Login;
 
-        public ShellViewModel(LoginViewModel loginViewModel, IEventAggregator eventAggregator)
+        public ShellViewModel(SalesViewModel salesViewModel, IEventAggregator eventAggregator, SimpleContainer container)
         {
-            _loginViewModel = loginViewModel;
-            ActivateItemAsync(_loginViewModel);
+            _salesViewModel = salesViewModel;
+            _eventAggregator = eventAggregator;
+            _container = container;
+            _eventAggregator.SubscribeOnUIThread(this);
+            ActivateItemAsync(_container.GetInstance<LoginViewModel>());
+        }
+
+        public async Task HandleAsync(LogInEventModel message, CancellationToken cancellationToken)
+        {
+            await ActivateItemAsync(_salesViewModel);
         }
     }
 }
