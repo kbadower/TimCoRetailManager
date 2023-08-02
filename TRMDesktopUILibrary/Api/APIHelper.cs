@@ -23,6 +23,13 @@ namespace TRMDesktopUILibrary.Api
             _loggedInUserModel = loggedInUserModel;
         }
 
+        public HttpClient ApiClient {
+            get
+            {
+                return _apiClient;
+            }
+        }
+
         public void InitializeClient()
         {
             string api = ConfigurationManager.AppSettings["api"];

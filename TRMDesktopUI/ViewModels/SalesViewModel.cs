@@ -4,20 +4,25 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using TRMDesktopUILibrary.Api;
+using TRMDesktopUILibrary.Models;
 
 namespace TRMDesktopUI.ViewModels
 {
     public class SalesViewModel : Screen
     {
-		private BindingList<string> _products;
-        private int _itemQuantity;
-        private BindingList<string> _cart;
+		private BindingList<ProductModel> _products;
+        private int _itemQuantity = 1;
+        private BindingList<CartProductModel> _cart = new BindingList<CartProductModel>();
         private decimal _subtotal;
         private decimal _tax;
         private decimal _total;
-
-        public BindingList<string> Products
+        private ProductModel _selectedProduct;
+        IProductEndpoint _productEndpoint;
+            
+        public BindingList<ProductModel> Products
 		{
 			get { return _products; }
 			set 
@@ -34,10 +39,11 @@ namespace TRMDesktopUI.ViewModels
 			{ 
 				_itemQuantity = value;
                 NotifyOfPropertyChange(() => ItemQuantity);
+                NotifyOfPropertyChange(() => CanAddToCart);
             }
 		}
 
-		public BindingList<string> Cart
+		public BindingList<CartProductModel> Cart
 		{
 			get { return _cart; }
 			set 
@@ -47,13 +53,16 @@ namespace TRMDesktopUI.ViewModels
             }
 		}
 
-		public decimal Subtotal
+		public string Subtotal
 		{
-			get { return _subtotal; }
-			set 
-			{ 
-				_subtotal = value;
-                NotifyOfPropertyChange(() => Subtotal);
+			get
+            {
+                decimal subTotal = 0;
+                foreach (var product in Cart)
+                {
+                    subTotal += product.Product.RetailPrice * product.QuantityInCart;
+                }
+                return subTotal.ToString("C");
             }
 		}
 
@@ -77,31 +86,79 @@ namespace TRMDesktopUI.ViewModels
             }
         }
 
+        public SalesViewModel(IProductEndpoint productEndpoint)
+        {
+            _productEndpoint = productEndpoint;
+        }
 
+        public ProductModel SelectedProduct
+        {
+            get { return _selectedProduct; }
+            set
+            {
+                _selectedProduct = value;
+                NotifyOfPropertyChange(() => SelectedProduct);
+                NotifyOfPropertyChange(() => CanAddToCart);
+            }
+        }
+
+
+        protected override async void OnViewLoaded(object view)
+        {
+            base.OnViewLoaded(view);
+            await LoadProducts();
+        }
+
+        public async Task LoadProducts()
+        {
+            var products = await _productEndpoint.GetAllProducts();
+            Products = new BindingList<ProductModel>(products);
+        }
 
         public void AddToCart()
 		{
-			throw new NotImplementedException();
+            CartProductModel existingItem = Cart.FirstOrDefault(x => x.Product == SelectedProduct);
+            if (existingItem != null)
+            {
+                existingItem.QuantityInCart += ItemQuantity;
+                Cart.Remove(existingItem);
+                Cart.Add(existingItem);
+            }
+            else
+            {
+                CartProductModel cartProduct = new CartProductModel()
+                {
+                    Product = SelectedProduct,
+                    QuantityInCart = ItemQuantity
+                };
+                Cart.Add(cartProduct);
+            }
+
+            SelectedProduct.QuantityInStock -= ItemQuantity;
+            ItemQuantity = 1;
+            NotifyOfPropertyChange(() => Subtotal);
 		}
 
 		public void RemoveFromCart()
 		{
-			throw new NotImplementedException();
-		}
+            NotifyOfPropertyChange(() => Subtotal);
+        }
 
 		public void Checkout()
 		{
 			throw new NotImplementedException();
 		}
 
-		public bool CanAddToCard
+        public bool CanAddToCart
 		{
             get
             {
                 bool output = false;
 
-                // make sure product is selected
-                // make sure quantity is > 0
+                if (ItemQuantity > 0 && SelectedProduct?.QuantityInStock >= ItemQuantity)
+                {
+                    output = true;
+                }
 
                 return output;
             }
