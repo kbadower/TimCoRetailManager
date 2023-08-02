@@ -57,12 +57,12 @@ namespace TRMDesktopUI.ViewModels
 		{
 			get
             {
-                decimal subTotal = 0;
+                _subtotal = 0;
                 foreach (var product in Cart)
                 {
-                    subTotal += product.Product.RetailPrice * product.QuantityInCart;
+                    _subtotal += product.Product.RetailPrice * product.QuantityInCart;
                 }
-                return subTotal.ToString("C");
+                return _subtotal.ToString("C");
             }
 		}
 
