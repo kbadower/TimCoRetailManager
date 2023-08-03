@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -57,7 +58,7 @@ namespace TRMDesktopUI.ViewModels
 			get
             {
                 var subtotal = CalculateSubtotal();
-                return subtotal.ToString("C");
+                return subtotal.ToString("C", new CultureInfo("en-US", false));
             }
 		}
 
@@ -73,7 +74,7 @@ namespace TRMDesktopUI.ViewModels
             get
             {
                 var tax = CalculateTax();
-                return tax.ToString("C");
+                return tax.ToString("C", new CultureInfo("en-US", false));
             }
         }
 
@@ -94,7 +95,7 @@ namespace TRMDesktopUI.ViewModels
             get
             {
                 var total = CalculateSubtotal() + CalculateTax();
-                return total.ToString("C");
+                return total.ToString("C", new CultureInfo("en-US", false));
             }
         }
 
