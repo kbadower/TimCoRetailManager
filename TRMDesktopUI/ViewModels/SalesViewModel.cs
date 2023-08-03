@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TRMDesktopUILibrary.Api;
+using TRMDesktopUILibrary.Helpers;
 using TRMDesktopUILibrary.Models;
 
 namespace TRMDesktopUI.ViewModels
@@ -16,12 +17,10 @@ namespace TRMDesktopUI.ViewModels
 		private BindingList<ProductModel> _products;
         private int _itemQuantity = 1;
         private BindingList<CartProductModel> _cart = new BindingList<CartProductModel>();
-        private decimal _subtotal;
-        private decimal _tax;
-        private decimal _total;
         private ProductModel _selectedProduct;
         IProductEndpoint _productEndpoint;
-            
+        private readonly IConfigHelper _configHelper;
+
         public BindingList<ProductModel> Products
 		{
 			get { return _products; }
@@ -57,38 +56,58 @@ namespace TRMDesktopUI.ViewModels
 		{
 			get
             {
-                _subtotal = 0;
-                foreach (var product in Cart)
-                {
-                    _subtotal += product.Product.RetailPrice * product.QuantityInCart;
-                }
-                return _subtotal.ToString("C");
+                var subtotal = CalculateSubtotal();
+                return subtotal.ToString("C");
             }
 		}
 
-        public decimal Tax
+        private decimal CalculateSubtotal()
         {
-            get { return _tax; }
-            set
+            decimal subtotal = 0;
+            foreach (var product in Cart)
             {
-                _subtotal = value;
-                NotifyOfPropertyChange(() => Tax);
+                subtotal += product.Product.RetailPrice * product.QuantityInCart;
+            }
+            return subtotal;
+        }
+
+        public string Tax
+        {
+            get
+            {
+                var tax = CalculateTax();
+                return tax.ToString("C");
             }
         }
 
-        public decimal Total
+        private decimal CalculateTax()
         {
-            get { return _total; }
-            set
+            decimal tax = 0;
+            decimal taxRate = _configHelper.GetTaxRate() / 100;
+
+            foreach (var product in Cart)
             {
-                _subtotal = value;
-                NotifyOfPropertyChange(() => Total);
+                if (product.Product.IsTaxable)
+                {
+                    tax += product.Product.RetailPrice * taxRate * product.QuantityInCart;
+                }
+            }
+            return tax;
+        }
+
+        public string Total
+        {
+            get
+            {
+                var total = CalculateSubtotal() + CalculateTax();
+                return total.ToString("C");
             }
         }
 
-        public SalesViewModel(IProductEndpoint productEndpoint)
+        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper)
         {
             _productEndpoint = productEndpoint;
+            _configHelper = configHelper;
         }
 
         public ProductModel SelectedProduct
@@ -137,11 +156,15 @@ namespace TRMDesktopUI.ViewModels
             SelectedProduct.QuantityInStock -= ItemQuantity;
             ItemQuantity = 1;
             NotifyOfPropertyChange(() => Subtotal);
-		}
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
+        }
 
 		public void RemoveFromCart()
 		{
             NotifyOfPropertyChange(() => Subtotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
         }
 
 		public void Checkout()

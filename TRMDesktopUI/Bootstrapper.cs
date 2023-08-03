@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using TRMDesktopUI.Helpers;
 using TRMDesktopUI.ViewModels;
 using TRMDesktopUILibrary.Api;
+using TRMDesktopUILibrary.Helpers;
 using TRMDesktopUILibrary.Models;
 
 namespace TRMDesktopUI
@@ -34,7 +35,8 @@ namespace TRMDesktopUI
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>()
                 .Singleton<ILoggedInUserModel, LoggedInUserModel>()
-                .Singleton<IAPIHelper, APIHelper>();
+                .Singleton<IAPIHelper, APIHelper>()
+                .Singleton<IConfigHelper, ConfigHelper>();
 
             GetType().Assembly.GetTypes()
                 .Where(type => type.IsClass)
