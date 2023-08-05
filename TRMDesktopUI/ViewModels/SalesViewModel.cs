@@ -21,6 +21,7 @@ namespace TRMDesktopUI.ViewModels
         private int _itemQuantity = 1;
         private BindingList<CartProductDisplayModel> _cart = new BindingList<CartProductDisplayModel>();
         private ProductDisplayModel _selectedProduct;
+        private CartProductDisplayModel _selectedCartProduct;
         IProductEndpoint _productEndpoint;
         private readonly IConfigHelper _configHelper;
         ISaleEndpoint _saleEndpoint;
@@ -122,6 +123,17 @@ namespace TRMDesktopUI.ViewModels
             }
         }
 
+        public CartProductDisplayModel SelectedCartProduct
+        {
+            get { return _selectedCartProduct; }
+            set
+            {
+                _selectedCartProduct = value;
+                NotifyOfPropertyChange(() => SelectedCartProduct);
+                NotifyOfPropertyChange(() => CanRemoveFromCart);
+            }
+        }
+
 
         protected override async void OnViewLoaded(object view)
         {
@@ -164,6 +176,19 @@ namespace TRMDesktopUI.ViewModels
 
 		public void RemoveFromCart()
 		{
+            CartProductDisplayModel selectedCartProduct = Cart.FirstOrDefault(x => x == SelectedCartProduct);
+
+            if (selectedCartProduct.QuantityInCart > 1)
+            {
+                selectedCartProduct.QuantityInCart -= 1;
+                selectedCartProduct.Product.QuantityInStock += 1;
+            }
+            else
+            {
+                selectedCartProduct.Product.QuantityInStock += 1;
+                Cart.Remove(selectedCartProduct);
+            }
+
             NotifyOfPropertyChange(() => Subtotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
@@ -206,7 +231,10 @@ namespace TRMDesktopUI.ViewModels
             {
                 bool output = false;
 
-                // make sure product in cart is selected
+                if (SelectedCartProduct != null && SelectedCartProduct?.QuantityInCart > 0)
+                {
+                    output = true;
+                }
 
                 return output;
             }
