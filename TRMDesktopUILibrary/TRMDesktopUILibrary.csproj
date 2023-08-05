@@ -54,8 +54,6 @@
     <Compile Include="Api\ISaleEndpoint.cs" />
     <Compile Include="Api\ProductEndpoint.cs" />
     <Compile Include="Api\SaleEndpoint.cs" />
-    <Compile Include="EventModels\LogInEventModel.cs" />
-    <Compile Include="EventModels\LogOutEventModel.cs" />
     <Compile Include="Helpers\ConfigHelper.cs" />
     <Compile Include="Helpers\IConfigHelper.cs" />
     <Compile Include="Models\AuthenticatedUserModel.cs" />

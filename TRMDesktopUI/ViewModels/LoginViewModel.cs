@@ -1,11 +1,9 @@
 ﻿using Caliburn.Micro;
 using System;
 using System.Threading.Tasks;
-using System.Windows;
+using TRMDesktopUI.EventModels;
 using TRMDesktopUI.Models;
 using TRMDesktopUILibrary.Api;
-using TRMDesktopUILibrary.Enums;
-using TRMDesktopUILibrary.Models;
 
 namespace TRMDesktopUI.ViewModels
 {

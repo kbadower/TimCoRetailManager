@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TRMDesktopUILibrary.Enums
+namespace TRMDesktopUI.EventModels
 {
-    public class LogInEventModel
+    public class LogOutEventModel
     {
-
     }
 }

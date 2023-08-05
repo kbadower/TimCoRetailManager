@@ -10,12 +10,5 @@ namespace TRMDesktopUILibrary.Models
     {
         public ProductModel Product { get; set; }
         public int QuantityInCart { get; set; }
-        public string CartText
-        {
-            get
-            {
-                return $"{Product.ProductName}  {QuantityInCart}x${Math.Round(Product.RetailPrice, 2)}";
-            }
-        }
     }
 }
