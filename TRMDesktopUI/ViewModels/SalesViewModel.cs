@@ -21,6 +21,14 @@ namespace TRMDesktopUI.ViewModels
         private ProductModel _selectedProduct;
         IProductEndpoint _productEndpoint;
         private readonly IConfigHelper _configHelper;
+        ISaleEndpoint _saleEndpoint;
+
+        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper, ISaleEndpoint saleEndpoint)
+        {
+            _productEndpoint = productEndpoint;
+            _configHelper = configHelper;
+            _saleEndpoint = saleEndpoint;
+        }
 
         public BindingList<ProductModel> Products
 		{
@@ -99,12 +107,6 @@ namespace TRMDesktopUI.ViewModels
             }
         }
 
-        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper)
-        {
-            _productEndpoint = productEndpoint;
-            _configHelper = configHelper;
-        }
-
         public ProductModel SelectedProduct
         {
             get { return _selectedProduct; }
@@ -153,6 +155,7 @@ namespace TRMDesktopUI.ViewModels
             NotifyOfPropertyChange(() => Subtotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckout);
         }
 
 		public void RemoveFromCart()
@@ -160,11 +163,22 @@ namespace TRMDesktopUI.ViewModels
             NotifyOfPropertyChange(() => Subtotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckout);
         }
 
-		public void Checkout()
+		public async Task Checkout()
 		{
-			throw new NotImplementedException();
+			SaleModel sale = new SaleModel();
+            foreach (var product in Cart)
+            {
+                sale.SaleDetails.Add(new SaleDetailModel
+                {
+                    ProductId = product.Product.Id,
+                    Quantity = product.QuantityInCart
+                });
+            }
+
+            await _saleEndpoint.PostSale(sale);
 		}
 
         public bool CanAddToCart
@@ -200,7 +214,10 @@ namespace TRMDesktopUI.ViewModels
             {
                 bool output = false;
 
-                // make sure cart is not empty
+                if (Cart.Count > 0)
+                {
+                    output = true;
+                }
 
                 return output;
             }
