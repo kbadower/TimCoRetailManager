@@ -42,27 +42,28 @@ namespace TRMDataAccessLibrary.DataAccess
                 }
 
                 details.Add(detail);
-
-                SaleDBModel saleDBModel = new SaleDBModel
-                {
-                    Subtotal = details.Sum(x => x.PurchasePrice),
-                    Tax = details.Sum(x => x.Tax)
-                };
-
-                saleDBModel.Total = saleDBModel.Subtotal + saleDBModel.Tax;
-                saleDBModel.CashierId = cashierId;  
-
-                SqlDataAccess _da = new SqlDataAccess();
-                _da.SaveData<SaleDBModel>("spSaleInsert", saleDBModel, "TRMData");
-
-                saleDBModel.Id = _da.LoadData<int, dynamic>("spSaleLookup", new { cashierId = saleDBModel.CashierId, SaleDate = saleDBModel.SaleDate }, "TRMData").FirstOrDefault();
-                
-                foreach (var item in details)
-                {
-                    item.SaleId = saleDBModel.Id;
-                    _da.SaveData("spSaleDetailInsert", item, "TRMData");
-                }
             }
+
+            SaleDBModel saleDBModel = new SaleDBModel
+            {
+                Subtotal = details.Sum(x => x.PurchasePrice),
+                Tax = details.Sum(x => x.Tax)
+            };
+
+            saleDBModel.Total = saleDBModel.Subtotal + saleDBModel.Tax;
+            saleDBModel.CashierId = cashierId;
+
+            SqlDataAccess _da = new SqlDataAccess();
+            _da.SaveData<SaleDBModel>("spSaleInsert", saleDBModel, "TRMData");
+
+            saleDBModel.Id = _da.LoadData<int, dynamic>("spSaleLookup", new { cashierId = saleDBModel.CashierId, SaleDate = saleDBModel.SaleDate }, "TRMData").FirstOrDefault();
+
+            foreach (var item in details)
+            {
+                item.SaleId = saleDBModel.Id;
+                _da.SaveData("spSaleDetailInsert", item, "TRMData");
+            }
+
         }
     }
 }
