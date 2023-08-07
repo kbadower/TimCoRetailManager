@@ -193,6 +193,7 @@ namespace TRMDesktopUI.ViewModels
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
             NotifyOfPropertyChange(() => CanCheckout);
+            NotifyOfPropertyChange(() => CanAddToCart);
         }
 
 		public async Task Checkout()
@@ -208,7 +209,22 @@ namespace TRMDesktopUI.ViewModels
             }
 
             await _saleEndpoint.PostSale(sale);
-		}
+            await ResetSalesViewModel();
+        }
+
+        public async Task ResetSalesViewModel()
+        {
+            Cart.Clear();
+            SelectedProduct = null;
+            SelectedCartProduct = null;
+            ItemQuantity = 1;
+            await LoadProducts();
+
+            NotifyOfPropertyChange(() => Subtotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckout);
+        }
 
         public bool CanAddToCart
 		{
