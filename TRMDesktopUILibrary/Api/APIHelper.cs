@@ -84,7 +84,7 @@ namespace TRMDesktopUILibrary.Api
                     _loggedInUserModel.FirstName = result.FirstName;
                     _loggedInUserModel.LastName = result.LastName;
                     _loggedInUserModel.EmailAddress = result.EmailAddress;
-                    _loggedInUserModel.Token = result.Token;
+                    _loggedInUserModel.Token = authToken;
                     _loggedInUserModel.Id = result.Id;
                 }
                 else
