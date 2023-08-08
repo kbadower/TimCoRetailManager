@@ -14,6 +14,8 @@ namespace TRMDesktopUILibrary.Api
 
         void InitializeClient();
 
+        void LogOffUser();
+
         HttpClient ApiClient { get; }
     }
 }
