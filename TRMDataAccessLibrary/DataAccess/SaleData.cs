@@ -60,9 +60,9 @@ namespace TRMDataAccessLibrary.DataAccess
                 {
                     _da.StartTransaction("TRMData");
 
-                    _da.SaveDataInTransaction("spSaleInsert", saleDBModel);
+                    _da.SaveDataInTransaction("spSale_Insert", saleDBModel);
 
-                    saleDBModel.Id = _da.LoadDataInTransaction<int, dynamic>("spSaleLookup",
+                    saleDBModel.Id = _da.LoadDataInTransaction<int, dynamic>("spSale_Lookup",
                         new
                         {
                             saleDBModel.CashierId,
@@ -73,7 +73,7 @@ namespace TRMDataAccessLibrary.DataAccess
                     foreach (var item in details)
                     {
                         item.SaleId = saleDBModel.Id;
-                        _da.SaveDataInTransaction("spSaleDetailInsert", item);
+                        _da.SaveDataInTransaction("spSaleDetail_Insert", item);
                     }
 
                     _da.CommitTransaction();

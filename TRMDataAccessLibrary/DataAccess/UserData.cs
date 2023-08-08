@@ -14,7 +14,7 @@ namespace TRMDataAccessLibrary.DataAccess
 
         public List<UserModel> GetUserById(string Id)
         {
-            var output =  _da.LoadData<UserModel, dynamic>("dbo.spGetUser", new { Id }, "TRMData");
+            var output =  _da.LoadData<UserModel, dynamic>("dbo.spUser_Get", new { Id }, "TRMData");
             return output;
         }
     }

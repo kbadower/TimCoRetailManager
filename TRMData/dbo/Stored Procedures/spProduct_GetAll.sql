@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[spGetAllProducts]
+﻿CREATE PROCEDURE [dbo].[spProduct_GetAll]
 
 AS
 BEGIN

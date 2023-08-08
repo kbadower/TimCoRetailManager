@@ -14,13 +14,13 @@ namespace TRMDataAccessLibrary.DataAccess
 
         public List<ProductModel> GetAllProducts()
         {
-            var output = _da.LoadData<ProductModel, dynamic>("spGetAllProducts", new { }, "TRMData");
+            var output = _da.LoadData<ProductModel, dynamic>("spProduct_GetAll", new { }, "TRMData");
             return output;
         }
 
         public ProductModel GetProductById(int id)
         {
-            var output = _da.LoadData<ProductModel, dynamic>("spGetProductById", new { Id = id }, "TRMData").FirstOrDefault();
+            var output = _da.LoadData<ProductModel, dynamic>("spProduct_GetById", new { Id = id }, "TRMData").FirstOrDefault();
             return output;
         }
     }
