@@ -12,8 +12,6 @@ namespace TRMDataAccessLibrary.DataAccess
 {
     public class SaleData
     {
-        SqlDataAccess _da = new SqlDataAccess();
-
         public void SaveSale(SaleModel sale, string cashierId)
         {
             List<SaleDetailDBModel> details = new List<SaleDetailDBModel>();
@@ -84,6 +82,17 @@ namespace TRMDataAccessLibrary.DataAccess
                     throw;
                 }
             }
+        }
+
+        public List<SaleReportModel> GetSaleReport()
+        {
+            var result = new List<SaleReportModel>();
+            using (SqlDataAccess _da = new SqlDataAccess())
+            {
+                result = _da.LoadData<SaleReportModel, dynamic>("spSale_SaleReport", new { }, "TRMData").ToList();
+            }
+
+            return result;
         }
     }
 }
