@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 using TRMDataAccessLibrary.Internal.DataAccess;
 using TRMDataAccessLibrary.Models;
 
@@ -53,17 +54,36 @@ namespace TRMDataAccessLibrary.DataAccess
             saleDBModel.Total = saleDBModel.Subtotal + saleDBModel.Tax;
             saleDBModel.CashierId = cashierId;
 
-            SqlDataAccess _da = new SqlDataAccess();
-            _da.SaveData<SaleDBModel>("spSaleInsert", saleDBModel, "TRMData");
-
-            saleDBModel.Id = _da.LoadData<int, dynamic>("spSaleLookup", new { cashierId = saleDBModel.CashierId, SaleDate = saleDBModel.SaleDate }, "TRMData").FirstOrDefault();
-
-            foreach (var item in details)
+            using (SqlDataAccess _da = new SqlDataAccess())
             {
-                item.SaleId = saleDBModel.Id;
-                _da.SaveData("spSaleDetailInsert", item, "TRMData");
-            }
+                try
+                {
+                    _da.StartTransaction("TRMData");
 
+                    _da.SaveDataInTransaction("spSaleInsert", saleDBModel);
+
+                    saleDBModel.Id = _da.LoadDataInTransaction<int, dynamic>("spSaleLookup",
+                        new
+                        {
+                            saleDBModel.CashierId,
+                            saleDBModel.SaleDate
+                        })
+                        .FirstOrDefault();
+
+                    foreach (var item in details)
+                    {
+                        item.SaleId = saleDBModel.Id;
+                        _da.SaveDataInTransaction("spSaleDetailInsert", item);
+                    }
+
+                    _da.CommitTransaction();
+                }
+                catch
+                {
+                    _da.RollbackTransatction();
+                    throw;
+                }
+            }
         }
     }
 }
