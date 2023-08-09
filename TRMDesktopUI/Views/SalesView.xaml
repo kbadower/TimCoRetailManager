@@ -30,7 +30,7 @@
         <TextBlock Text="Sales Page" FontSize="48" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="0 0 0 20"/>
 
         <!--Column 0-->
-        <TextBlock Text="Items" Grid.Row="1" Grid.Column="0" Margin="0,0,0,200" Grid.RowSpan="2"/>
+        <TextBlock Text="Items" Grid.Row="1" Grid.Column="0"/>
         <ListBox x:Name="Products" Grid.Row="2" Grid.Column="0" MinHeight="200" MinWidth="100" SelectedItem="{Binding SelectedProduct}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
