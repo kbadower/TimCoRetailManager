@@ -3,11 +3,13 @@ using Caliburn.Micro;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Dynamic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using TRMDesktopUI.Models;
 using TRMDesktopUILibrary.Api;
 using TRMDesktopUILibrary.Helpers;
@@ -26,13 +28,17 @@ namespace TRMDesktopUI.ViewModels
         private readonly IConfigHelper _configHelper;
         ISaleEndpoint _saleEndpoint;
         private IMapper _mapper;
+        private StatusInfoViewModel _status;
+        private IWindowManager _window;
 
-        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper, ISaleEndpoint saleEndpoint, IMapper mapper)
+        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper, ISaleEndpoint saleEndpoint, IMapper mapper, StatusInfoViewModel status, IWindowManager window)
         {
             _productEndpoint = productEndpoint;
             _configHelper = configHelper;
             _saleEndpoint = saleEndpoint;
             _mapper = mapper;
+            _status = status;
+            _window = window;
         }
 
         public BindingList<ProductDisplayModel> Products
@@ -138,7 +144,30 @@ namespace TRMDesktopUI.ViewModels
         protected override async void OnViewLoaded(object view)
         {
             base.OnViewLoaded(view);
-            await LoadProducts();
+            try
+            {
+                await LoadProducts();
+            }
+            catch (Exception ex)
+            {
+                dynamic settings = new ExpandoObject();
+                settings.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                settings.ResizeMode = ResizeMode.NoResize;
+                settings.Title = "System Error";
+
+                if (ex.Message == "Unauthorized")
+                {
+                    _status.UpdateMessage("Permission denied.", "You do not have permission to view this page.");
+                    await _window.ShowDialogAsync(_status, null, settings);
+                }
+                else
+                {
+                    _status.UpdateMessage("Fatal exception.", "Something went wrong loading the page.");
+                    await _window.ShowDialogAsync(_status, null, settings);
+                }
+
+                TryCloseAsync();
+            }
         }
 
         public async Task LoadProducts()
