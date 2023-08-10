@@ -14,7 +14,7 @@ using TRMDataManager.Models;
 
 namespace TRMDataManager.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class UserController : ApiController
     {
         [HttpGet]
@@ -59,6 +59,47 @@ namespace TRMDataManager.Controllers
                 }
 
                 return output;
+            }
+        }
+
+
+        //[Authorize(Roles = "Admin")]
+        [HttpGet]
+        [Route("api/User/Admin/GetAllRoles")]
+        public Dictionary<string, string> GetAllRoles()
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                var roles = context.Roles.ToDictionary(x => x.Id, x => x.Name);
+                return roles;
+            }
+        }
+
+        //[Authorize(Roles = "Admin")]
+        [HttpPost]
+        [Route("api/User/Admin/AddRole")]
+        public void AddRole(UserRolePairModel userRolePair)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                var userStore = new UserStore<ApplicationUser>(context);
+                var userManager = new UserManager<ApplicationUser>(userStore);
+
+                userManager.AddToRole(userRolePair.UserId, userRolePair.RoleName);
+            }
+        }
+
+        //[Authorize(Roles = "Admin")]
+        [HttpPost]
+        [Route("api/User/Admin/RemoveRole")]
+        public void RemoveRole(UserRolePairModel userRolePair)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                var userStore = new UserStore<ApplicationUser>(context);
+                var userManager = new UserManager<ApplicationUser>(userStore);
+
+                userManager.RemoveFromRole(userRolePair.UserId, userRolePair.RoleName);
             }
         }
     }
