@@ -29,7 +29,6 @@ namespace TRMApi.Controllers
         }
 
         [HttpGet]
-
         [Authorize(Roles = "Admin,Manager")]
         public List<InventoryModel> Get()
         {
