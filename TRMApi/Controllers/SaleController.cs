@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Security.Claims;
 using TRMDataAccessLibrary.DataAccess;
@@ -13,11 +14,18 @@ namespace TRMApi.Controllers
     [Authorize]
     public class SaleController : ControllerBase
     {
+        private readonly IConfiguration _configuration;
+
+        public SaleController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         [HttpPost]
         [Authorize(Roles = "Cashier")]
         public void Post(SaleModel sale)
         {
-            SaleData data = new SaleData();
+            SaleData data = new SaleData(_configuration);
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             data.SaveSale(sale, userId);
@@ -28,7 +36,7 @@ namespace TRMApi.Controllers
         [Authorize(Roles = "Admin,Manager")]
         public List<SaleReportModel> GetSalesReport()
         {
-            SaleData data = new SaleData();
+            SaleData data = new SaleData(_configuration);
             var output = data.GetSaleReport();
             return output;
         }

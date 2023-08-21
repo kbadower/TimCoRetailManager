@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,10 +11,16 @@ namespace TRMDataAccessLibrary.DataAccess
 {
     public class UserData
     {
-        SqlDataAccess _da = new SqlDataAccess();
+        private readonly IConfiguration _configuration;
+
+        public UserData(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
         public List<UserModel> GetUserById(string Id)
         {
+            SqlDataAccess _da = new SqlDataAccess(_configuration);
             var output =  _da.LoadData<UserModel, dynamic>("dbo.spUser_Get", new { Id }, "TRMData");
             return output;
         }

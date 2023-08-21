@@ -11,6 +11,7 @@ using TRMApi.Data;
 using System.Security.Claims;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace TRMApi.Controllers
 {
@@ -21,18 +22,20 @@ namespace TRMApi.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IConfiguration _configuration;
 
-        public UserController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public UserController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
+            _configuration = configuration;
         }
 
         [HttpGet]
         public UserModel GetById()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            UserData userData = new UserData();
+            UserData userData = new UserData(_configuration);
 
             var output = userData.GetUserById(userId).First();
             return output;
