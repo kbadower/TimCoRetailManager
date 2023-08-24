@@ -9,19 +9,18 @@ using TRMDataAccessLibrary.Models;
 
 namespace TRMDataAccessLibrary.DataAccess
 {
-    public class UserData
+    public class UserData : IUserData
     {
-        private readonly IConfiguration _configuration;
+        private readonly ISqlDataAccess _da;
 
-        public UserData(IConfiguration configuration)
+        public UserData(ISqlDataAccess da)
         {
-            _configuration = configuration;
+            _da = da;
         }
 
         public List<UserModel> GetUserById(string Id)
         {
-            SqlDataAccess _da = new SqlDataAccess(_configuration);
-            var output =  _da.LoadData<UserModel, dynamic>("dbo.spUser_Get", new { Id }, "TRMData");
+            var output = _da.LoadData<UserModel, dynamic>("dbo.spUser_Get", new { Id }, "TRMData");
             return output;
         }
     }
