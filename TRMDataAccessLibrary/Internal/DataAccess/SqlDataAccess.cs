@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -14,10 +15,17 @@ namespace TRMDataAccessLibrary.Internal.DataAccess
 {
     public class SqlDataAccess : IDisposable, ISqlDataAccess
     {
+        IDbConnection _connection;
+        IDbTransaction _transaction;
 
-        public SqlDataAccess(IConfiguration configuration)
+        private bool isTransactionClosed = false;
+        private readonly IConfiguration _configuration;
+        private readonly ILogger _logger;
+
+        public SqlDataAccess(IConfiguration configuration, ILogger<SqlDataAccess> logger)
         {
             _configuration = configuration;
+            _logger = logger;
         }
 
         public string GetConnectionString(string name)
@@ -45,12 +53,6 @@ namespace TRMDataAccessLibrary.Internal.DataAccess
                 connection.Execute(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
             }
         }
-
-        IDbConnection _connection;
-        IDbTransaction _transaction;
-
-        private bool isTransactionClosed = false;
-        private readonly IConfiguration _configuration;
 
         public IConfiguration Configuration { get; }
 
@@ -100,9 +102,9 @@ namespace TRMDataAccessLibrary.Internal.DataAccess
                 {
                     CommitTransaction();
                 }
-                catch
+                catch(Exception ex)
                 {
-                    // TODO - Log the exception
+                    _logger.LogError(ex, "Transaction has failed.");
                 }
             }
 

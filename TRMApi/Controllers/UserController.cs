@@ -12,6 +12,7 @@ using System.Security.Claims;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace TRMApi.Controllers
 {
@@ -23,12 +24,14 @@ namespace TRMApi.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUserData _data;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IUserData data)
+        public UserController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IUserData data, ILogger<UserController> logger)
         {
             _context = context;
             _userManager = userManager;
             _data = data;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -81,8 +84,13 @@ namespace TRMApi.Controllers
         [Route("Admin/AddRole")]
         public async Task AddRole(UserRolePairModel userRolePair)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var adminUser = _data.GetUserById(userId).First();
+
             var user = await _userManager.FindByIdAsync(userRolePair.UserId);
             await _userManager.AddToRoleAsync(user, userRolePair.RoleName);
+
+            _logger.LogInformation("{User} was added to {Role} role by {Admin}", user.Id, userRolePair.RoleName, adminUser.Id);
         }
 
         [Authorize(Roles = "Admin")]
@@ -90,8 +98,13 @@ namespace TRMApi.Controllers
         [Route("Admin/RemoveRole")]
         public async Task RemoveRole(UserRolePairModel userRolePair)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var adminUser = _data.GetUserById(userId).First();
+
             var user = await _userManager.FindByIdAsync(userRolePair.UserId);
             await _userManager.RemoveFromRoleAsync(user, userRolePair.RoleName);
+
+            _logger.LogInformation("{User} was removed from {Role} role by {Admin}", user.Id, userRolePair.RoleName, adminUser.Id);
         }
     }
 }
