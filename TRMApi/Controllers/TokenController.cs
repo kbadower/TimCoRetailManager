@@ -9,6 +9,8 @@ using TRMApi.Data;
 using System.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System;
+using System.Configuration;
+using Microsoft.Extensions.Configuration;
 
 namespace TRMApi.Controllers
 {
@@ -16,11 +18,13 @@ namespace TRMApi.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IConfiguration _configuration;
 
-        public TokenController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public TokenController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
+            _configuration = configuration;
         }
 
         [HttpPost]
@@ -68,7 +72,7 @@ namespace TRMApi.Controllers
             var token = new JwtSecurityToken(
                 new JwtHeader(
                     new SigningCredentials(
-                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ThisIsAVerySecretSymmetricSecurityKeySoDontShareIt")),
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("Secrets:SecurityKey"))),
                         SecurityAlgorithms.HmacSha256)),
                     new JwtPayload(claims));
 
