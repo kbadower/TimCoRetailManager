@@ -2,8 +2,8 @@
 using System;
 using System.Threading.Tasks;
 using TRMDesktopUI.EventModels;
-using TRMDesktopUI.Models;
 using TRMDesktopUILibrary.Api;
+using TRMDesktopUILibrary.Models;
 
 namespace TRMDesktopUI.ViewModels
 {
