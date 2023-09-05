@@ -3,9 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
 using TRMDataAccessLibrary.Internal.DataAccess;
 using TRMDataAccessLibrary.Models;
 
@@ -15,17 +12,35 @@ namespace TRMDataAccessLibrary.DataAccess
     {
         private readonly IProductData _productData;
         private readonly ISqlDataAccess _da;
+        private readonly IConfiguration _config;
 
-        public SaleData(IProductData productData, ISqlDataAccess da)
+        public SaleData(IProductData productData, ISqlDataAccess da, IConfiguration config)
         {
             _productData = productData;
             _da = da;
+            _config = config;
+        }
+
+        public decimal GetTaxRate()
+        {
+            string rateText = _config.GetValue<string>("TaxRate");
+
+            bool isValidTaxRate = decimal.TryParse(rateText, out decimal output);
+
+            if (isValidTaxRate == false)
+            {
+                throw new ConfigurationErrorsException("Error setting up tax rate.");
+            }
+
+            output = output / 100;
+            return output;
+
         }
 
         public void SaveSale(SaleModel sale, string cashierId)
         {
             List<SaleDetailDBModel> details = new List<SaleDetailDBModel>();
-            var taxRate = ConfigHelper.GetTaxRate();
+            var taxRate = GetTaxRate();
 
             foreach (var product in sale.SaleDetails)
             {
@@ -46,7 +61,7 @@ namespace TRMDataAccessLibrary.DataAccess
 
                 if (productInfo.IsTaxable)
                 {
-                    detail.Tax = (detail.PurchasePrice * taxRate / 100);
+                    detail.Tax = taxRate;
                 }
 
                 details.Add(detail);
