@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
 
-namespace TRMDataAccessLibrary.Internal.DataAccess
+namespace TRMDataAccessLibrary.DataAccess
 {
     public class SqlDataAccess : IDisposable, ISqlDataAccess
     {
@@ -102,7 +102,7 @@ namespace TRMDataAccessLibrary.Internal.DataAccess
                 {
                     CommitTransaction();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     _logger.LogError(ex, "Transaction has failed.");
                 }

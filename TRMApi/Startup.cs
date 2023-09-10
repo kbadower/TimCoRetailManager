@@ -11,7 +11,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
 using TRMDataAccessLibrary.DataAccess;
-using TRMDataAccessLibrary.Internal.DataAccess;
 
 namespace TRMApi
 {

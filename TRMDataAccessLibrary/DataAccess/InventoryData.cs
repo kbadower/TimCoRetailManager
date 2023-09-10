@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using TRMDataAccessLibrary.Internal.DataAccess;
 using TRMDataAccessLibrary.Models;
 
 namespace TRMDataAccessLibrary.DataAccess

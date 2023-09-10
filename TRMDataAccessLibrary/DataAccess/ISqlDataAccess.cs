@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 
-namespace TRMDataAccessLibrary.Internal.DataAccess
+namespace TRMDataAccessLibrary.DataAccess
 {
     public interface ISqlDataAccess
     {
