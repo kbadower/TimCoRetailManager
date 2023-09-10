@@ -1,18 +1,16 @@
 ﻿using AutoMapper;
 using Caliburn.Micro;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Dynamic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using TRMDesktopUI.Models;
 using TRMDesktopUILibrary.Api;
-using TRMDesktopUILibrary.Helpers;
 using TRMDesktopUILibrary.Models;
 
 namespace TRMDesktopUI.ViewModels
@@ -25,16 +23,16 @@ namespace TRMDesktopUI.ViewModels
         private ProductDisplayModel _selectedProduct;
         private CartProductDisplayModel _selectedCartProduct;
         IProductEndpoint _productEndpoint;
-        private readonly IConfigHelper _configHelper;
+        private readonly IConfiguration _configuration;
         ISaleEndpoint _saleEndpoint;
         private IMapper _mapper;
         private StatusInfoViewModel _status;
         private IWindowManager _window;
 
-        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper, ISaleEndpoint saleEndpoint, IMapper mapper, StatusInfoViewModel status, IWindowManager window)
+        public SalesViewModel(IProductEndpoint productEndpoint, IConfiguration configuration, ISaleEndpoint saleEndpoint, IMapper mapper, StatusInfoViewModel status, IWindowManager window)
         {
             _productEndpoint = productEndpoint;
-            _configHelper = configHelper;
+            _configuration = configuration;
             _saleEndpoint = saleEndpoint;
             _mapper = mapper;
             _status = status;
@@ -100,7 +98,7 @@ namespace TRMDesktopUI.ViewModels
         private decimal CalculateTax()
         {
             decimal tax = 0;
-            decimal taxRate = _configHelper.GetTaxRate() / 100;
+            decimal taxRate = _configuration.GetValue<decimal>("taxRate") / 100;
 
             tax = Cart
                 .Where(c => c.Product.IsTaxable)
