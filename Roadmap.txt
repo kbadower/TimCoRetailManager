@@ -2,20 +2,17 @@ Pushed using Azure DevOps repositoru
 
 Application Ideas:
 * Actually interact with the inventory
-* Move API to Azure
-* CI/CD process
-* Deploy the Desktop App to Blob storage for download
 * Introduce web-based inventory control system (Blazor)
 * Web-based reporting
 * Xamarin forms app for mobile register
+* Blazor App
+* Microservices
 
 
 Phase 2 Roadmap
-1. Take advantage of .NET Core (DI, logging etc.)
-2. Setup a task board in Azure DevOps
-3. CI/CD process setup with Azure DevOps
-4. Move the API to Azure
-5. Move the database to Azure SQL
-6. Deploy the Desktop App to Azure Blob storage
-7. Web-based inventory system
-8. test
+1. Hook up inventory so it interacts with sales (adds/subtracts items)
+2. Admin portal for inventory (web)
+3. User Blazor WebAssembly PWA (progressive-web-app)
+4. Dockerize backend (API, etc.)
+5. Break off a piece as microservice
+6. Upgrade to .NET 5
