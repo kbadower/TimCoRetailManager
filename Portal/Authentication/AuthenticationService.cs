@@ -52,7 +52,7 @@ namespace Portal.Authentication
             return result;
         }
 
-        public async Task LogOut(AuthenticatedUserModel userForLogout)
+        public async Task LogOut()
         {
             await _localStorage.RemoveItemAsync("authToken");
             ((AuthStateProvider)_authenticationStateProvider).NotifyUserLogout();
