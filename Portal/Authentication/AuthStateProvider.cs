@@ -9,18 +9,21 @@ namespace Portal.Authentication
     {
         private readonly HttpClient _httpClient;
         private readonly ILocalStorageService _localStorage;
+        private readonly IConfiguration _configuration;
         private readonly AuthenticationState _anonymous;
 
-        public AuthStateProvider(HttpClient httpClient, ILocalStorageService localStorage)
+        public AuthStateProvider(HttpClient httpClient, ILocalStorageService localStorage, IConfiguration configuration)
         {
             _httpClient = httpClient;
             _localStorage = localStorage;
+            _configuration = configuration;
             _anonymous = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
         } 
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            var token = await _localStorage.GetItemAsync<string>("authToken");
+            var authTokenStorageKey = _configuration["authTokenStorageKey"];
+            var token = await _localStorage.GetItemAsync<string>(authTokenStorageKey);
 
             if (string.IsNullOrEmpty(token))
             {
