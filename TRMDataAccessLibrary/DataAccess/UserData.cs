@@ -22,5 +22,10 @@ namespace TRMDataAccessLibrary.DataAccess
             var output = _da.LoadData<UserModel, dynamic>("dbo.spUser_Get", new { Id }, "TRMData");
             return output;
         }
+
+        public void CreateUser(UserModel user)
+        {
+            _da.SaveData("dbo.spUser_Insert", new { user.Id, user.FirstName, user.LastName, user.EmailAddress }, "TRMData");
+        }
     }
 }
