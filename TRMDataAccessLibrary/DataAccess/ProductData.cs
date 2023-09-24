@@ -10,7 +10,6 @@ namespace TRMDataAccessLibrary.DataAccess
 {
     public class ProductData : IProductData
     {
-        private readonly IConfiguration _configuration;
         private readonly ISqlDataAccess _da;
 
         public ProductData(ISqlDataAccess da)

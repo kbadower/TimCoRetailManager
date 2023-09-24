@@ -26,6 +26,15 @@
 
 </EditForm>
 
+@if (showAuthenticationError)
+{
+    <div class="row">
+        <div class="alert alert-danger p-2" role="alert">
+            @authenticationErrorText
+        </div>
+    </div>
+}
+
 @code {
     AuthenticationUserModel model = new();
 

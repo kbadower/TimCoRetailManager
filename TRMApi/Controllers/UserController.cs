@@ -107,7 +107,7 @@ namespace TRMApi.Controllers
 
             foreach (var user in users)
             {
-                ApplicationUserModel u = new ApplicationUserModel
+                ApplicationUserModel u = new()
                 {
                     Id = user.Id,
                     Email = user.Email

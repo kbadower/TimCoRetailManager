@@ -16,9 +16,9 @@ namespace TRMDesktopUI.ViewModels
     {
 
         private BindingList<UserModel> _users;
-        private IUserEndpoint _userEndpoint;
-        private StatusInfoViewModel _status;
-        private IWindowManager _window;
+        private readonly IUserEndpoint _userEndpoint;
+        private readonly StatusInfoViewModel _status;
+        private readonly IWindowManager _window;
 
         public UserDisplayViewModel(IUserEndpoint userEndpoint, StatusInfoViewModel status, IWindowManager window)
         {
@@ -50,7 +50,10 @@ namespace TRMDesktopUI.ViewModels
                 _selectedUser = value;
                 SelectedUserName = value.Email;
                 UserRoles = new BindingList<string>(value.Roles.Select(x => x.Value).ToList());
-                LoadAvailableRoles(); // TODO - fix not awaiting async method, this can cause issues
+
+                // Hack - Waiting for task to finish in setter is not safe but gets rid of the warning
+                // Should pull this up to some method/event call
+                LoadAvailableRoles().Wait(); 
                 NotifyOfPropertyChange(() => SelectedUser);
                 NotifyOfPropertyChange(() => CanAddSelectedRole);
                 NotifyOfPropertyChange(() => CanRemoveSelectedRole);
@@ -69,7 +72,7 @@ namespace TRMDesktopUI.ViewModels
             }
         }
 
-        private BindingList<string> _userRoles = new BindingList<string>();
+        private BindingList<string> _userRoles = new();
 
         public BindingList<string> UserRoles
         {
@@ -81,7 +84,7 @@ namespace TRMDesktopUI.ViewModels
             }
         }
 
-        private BindingList<string> _availableRoles = new BindingList<string>();
+        private BindingList<string> _availableRoles = new();
 
         public BindingList<string> AvailableRoles
         {
@@ -144,7 +147,7 @@ namespace TRMDesktopUI.ViewModels
                     await _window.ShowDialogAsync(_status, null, settings);
                 }
 
-                TryCloseAsync();
+                await TryCloseAsync();
             }
         }
 

@@ -19,15 +19,16 @@ namespace TRMDesktopUI.ViewModels
     {
 		private BindingList<ProductDisplayModel> _products;
         private int _itemQuantity = 1;
-        private BindingList<CartProductDisplayModel> _cart = new BindingList<CartProductDisplayModel>();
+        private BindingList<CartProductDisplayModel> _cart = new();
         private ProductDisplayModel _selectedProduct;
         private CartProductDisplayModel _selectedCartProduct;
-        IProductEndpoint _productEndpoint;
+
+        private readonly IProductEndpoint _productEndpoint;
         private readonly IConfiguration _configuration;
-        ISaleEndpoint _saleEndpoint;
-        private IMapper _mapper;
-        private StatusInfoViewModel _status;
-        private IWindowManager _window;
+        private readonly ISaleEndpoint _saleEndpoint;
+        private readonly IMapper _mapper;
+        private readonly StatusInfoViewModel _status;
+        private readonly IWindowManager _window;
 
         public SalesViewModel(IProductEndpoint productEndpoint, IConfiguration configuration, ISaleEndpoint saleEndpoint, IMapper mapper, StatusInfoViewModel status, IWindowManager window)
         {
@@ -164,7 +165,7 @@ namespace TRMDesktopUI.ViewModels
                     await _window.ShowDialogAsync(_status, null, settings);
                 }
 
-                TryCloseAsync();
+                await TryCloseAsync();
             }
         }
 
@@ -185,7 +186,7 @@ namespace TRMDesktopUI.ViewModels
             }
             else
             {
-                CartProductDisplayModel cartProduct = new CartProductDisplayModel()
+                CartProductDisplayModel cartProduct = new()
                 {
                     Product = SelectedProduct,
                     QuantityInCart = ItemQuantity
@@ -225,7 +226,7 @@ namespace TRMDesktopUI.ViewModels
 
 		public async Task Checkout()
 		{
-			SaleModel sale = new SaleModel();
+			SaleModel sale = new();
             foreach (var product in Cart)
             {
                 sale.SaleDetails.Add(new SaleDetailModel

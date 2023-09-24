@@ -15,10 +15,8 @@ namespace TRMDesktopUI.ViewModels
     public class ShellViewModel : Conductor<object>, IHandle<LogInEventModel>
     {
         private readonly IEventAggregator _eventAggregator;
-        private ILoggedInUserModel _loggedInUser;
-        private IAPIHelper _apiHelper;
-
-        public event EventHandler<LoginViewModel> Login;
+        private readonly ILoggedInUserModel _loggedInUser;
+        private readonly IAPIHelper _apiHelper;
 
         public ShellViewModel(IEventAggregator eventAggregator, ILoggedInUserModel loggedInUser, IAPIHelper apiHelper)
         {
@@ -102,7 +100,7 @@ namespace TRMDesktopUI.ViewModels
 
         public async Task HandleAsync(LogInEventModel message, CancellationToken cancellationToken)
         {
-            await ActivateItemAsync(IoC.Get<SalesViewModel>());
+            await ActivateItemAsync(IoC.Get<SalesViewModel>(), cancellationToken);
             NotifyOfPropertyChange(() => IsLoggedIn);
             NotifyOfPropertyChange(() => IsLoggedOut);
             NotifyOfPropertyChange(() => IsUsersVisible);
