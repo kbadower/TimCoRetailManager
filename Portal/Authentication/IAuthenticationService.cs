@@ -1,4 +1,5 @@
 ﻿using Portal.Models;
+using TRMDesktopUILibrary.Models;
 
 namespace Portal.Authentication
 {

@@ -7,6 +7,7 @@ namespace TRMDesktopUILibrary.Api
     public interface IUserEndpoint
     {
         Task AddUserToRole(string userId, string roleName);
+        Task CreateUser(CreateUserModel model);
         Task<Dictionary<string, string>> GetAllRoles();
         Task<List<UserModel>> GetAllUsers();
         Task RemoveUserFromRole(string userId, string roleName);
