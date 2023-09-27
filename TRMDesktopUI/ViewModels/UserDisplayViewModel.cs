@@ -53,7 +53,7 @@ namespace TRMDesktopUI.ViewModels
 
                 // Hack - Waiting for task to finish in setter is not safe but gets rid of the warning
                 // Should pull this up to some method/event call
-                LoadAvailableRoles().Wait(); 
+                LoadAvailableRoles();
                 NotifyOfPropertyChange(() => SelectedUser);
                 NotifyOfPropertyChange(() => CanAddSelectedRole);
                 NotifyOfPropertyChange(() => CanRemoveSelectedRole);
