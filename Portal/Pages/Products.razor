@@ -1,5 +1,6 @@
 ﻿@page "/products"
 @inject IProductEndpoint ProductEndpoint
+@inject IConfiguration Config
 @attribute [Authorize(Roles = "Cashier")]
 
 <h3>Products</h3>
@@ -13,14 +14,21 @@
     else
     {
         <div class="row">
-            @foreach (var item in products)
+            @foreach (var item in products) 
             {
                 <div class="col-xxl-4 col-lg-6 mb-3">
                     <div class="container">
                         <div class="row">
                             <div class="col-12">
                                 <a href="">
-                                    <img src="https://dummyimage.com/1200x900/000/fff" class="img-fluid" alt="Placeholder image" />
+                                    @if(string.IsNullOrWhiteSpace(item.ProductImage))
+                                    {
+                                        <img src="https://dummyimage.com/1200x900/000000/ffffff&text=Coming+Soon" class="img-fluid" alt="Placeholder Image" />
+                                    }
+                                    else
+                                    {
+                                        <img src="@($"{apiUrl}{item.ProductImage}")" class="img-fluid" alt="@item.ProductName" />
+                                    }
                                 </a>
                                 <p class="my-2 text-justify">
                                     <strong>@item.Description</strong>
@@ -44,9 +52,11 @@
 
 @code {
     private List<ProductModel> products = new();
+    private string apiUrl;
 
     protected override async Task OnInitializedAsync()
     {
         products = await ProductEndpoint.GetAllProducts();
+        apiUrl = Config.GetValue<string>("api");
     }
 }
