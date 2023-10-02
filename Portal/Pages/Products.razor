@@ -55,19 +55,33 @@
     private List<ProductModel> products = new();
     private string apiUrl;
     private const string localStorageProductsKey = "products";
-    private const string localStorageProductCacheDateKey = "productCacheDate";
+    private const string localStorageProductsCacheDateKey = "productCacheDate";
 
     protected override async Task OnInitializedAsync()
     {
         apiUrl = Config.GetValue<string>("api");
 
         products = await localStorage.GetItemAsync<List<ProductModel>>(localStorageProductsKey);
+        DateTime? cacheDate = await localStorage.GetItemAsync<DateTime?>(localStorageProductsCacheDateKey);
+        double cacheAge = 0;
 
-        if (products is null)
+        if (cacheDate is not null)
         {
-            products = await ProductEndpoint.GetAllProducts();
-            await localStorage.SetItemAsync(localStorageProductsKey, products);
-            await localStorage.SetItemAsync(localStorageProductCacheDateKey, DateTime.UtcNow);
+            cacheAge = DateTime.UtcNow.Subtract((DateTime)cacheDate).TotalMinutes;
+        }
+
+        if (products is null || cacheDate is null || cacheAge > 10)
+        {
+            try
+            {
+                products = await ProductEndpoint.GetAllProducts();
+                await localStorage.SetItemAsync(localStorageProductsKey, products);
+                await localStorage.SetItemAsync(localStorageProductsCacheDateKey, DateTime.UtcNow);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }
