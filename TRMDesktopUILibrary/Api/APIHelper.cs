@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -26,6 +25,20 @@ namespace TRMDesktopUILibrary.Api
             get
             {
                 return _apiClient;
+            }
+        }
+
+        public async Task<T> GetAsync<T>(string url)
+        {
+            using HttpResponseMessage response = await _apiClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsAsync<T>();
+                return result;
+            }
+            else
+            {
+                throw new Exception(response.ReasonPhrase);
             }
         }
 

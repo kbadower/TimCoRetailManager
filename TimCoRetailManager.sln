@@ -28,6 +28,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebApps", "WebApps", "{55B9
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portal", "Portal\Portal.csproj", "{C0F0CA26-3D75-4F8B-97FC-E554D4BD512D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TRMDesktopUI.Library.Tests", "TRMDesktopUI.Library.Tests\TRMDesktopUI.Library.Tests\TRMDesktopUI.Library.Tests.csproj", "{B40EEB7A-E559-4B94-A1BC-8233A3FEC0D0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,6 +62,10 @@ Global
 		{C0F0CA26-3D75-4F8B-97FC-E554D4BD512D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0F0CA26-3D75-4F8B-97FC-E554D4BD512D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0F0CA26-3D75-4F8B-97FC-E554D4BD512D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B40EEB7A-E559-4B94-A1BC-8233A3FEC0D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B40EEB7A-E559-4B94-A1BC-8233A3FEC0D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B40EEB7A-E559-4B94-A1BC-8233A3FEC0D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B40EEB7A-E559-4B94-A1BC-8233A3FEC0D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,6 +77,7 @@ Global
 		{7D2DA67F-8CFB-4C57-830F-EAC939D57B14} = {D9A2F9CA-B0D5-47AE-9B14-66C59C71B5E7}
 		{F87746A8-8EF0-4D45-B467-F7F5CB936640} = {799CBA15-460E-4112-89FF-022AC52777A8}
 		{C0F0CA26-3D75-4F8B-97FC-E554D4BD512D} = {55B96A98-E920-4722-8029-870ACFFD6261}
+		{B40EEB7A-E559-4B94-A1BC-8233A3FEC0D0} = {D9A2F9CA-B0D5-47AE-9B14-66C59C71B5E7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7541A1FC-7A05-4337-950C-E0E668C1FB7C}

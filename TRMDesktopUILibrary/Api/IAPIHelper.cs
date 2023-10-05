@@ -9,6 +9,8 @@ namespace TRMDesktopUILibrary.Api
     {
         Task<AuthenticatedUserModel> Authenticate(string username, string password);
 
+        Task<T> GetAsync<T>(string url);
+
         Task GetLoggedInUserInfo(string authToken);
 
         void InitializeClient();
