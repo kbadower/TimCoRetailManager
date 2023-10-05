@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TRMApi.Models;
 using TRMDataAccessLibrary.Models;
 
 namespace TRMDataAccessLibrary.DataAccess
@@ -27,6 +28,20 @@ namespace TRMDataAccessLibrary.DataAccess
         {
             var output = _da.LoadData<ProductModel, dynamic>("spProduct_GetById", new { Id = id }, "TRMData").FirstOrDefault();
             return output;
+        }
+
+        public void CreateProduct(CreateProductModel model)
+        {
+            _da.SaveData("spProduct_Insert",
+                new
+                {
+                    model.ProductName,
+                    model.Description,
+                    model.RetailPrice,
+                    model.QuantityInStock,
+                    model.IsTaxable,
+                    model.ProductImage
+                }, "TRMData");
         }
     }
 }

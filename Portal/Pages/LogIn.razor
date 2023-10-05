@@ -36,7 +36,7 @@
 }
 
 @code {
-    AuthenticationUserModel model = new();
+    AuthenticationUserModel model = new() { Email = "Kbadower@gmail.com", Password = "Pwd12345."};
 
     private bool showAuthenticationError = false;
     private string authenticationErrorText = "";

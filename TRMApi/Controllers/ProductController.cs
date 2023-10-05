@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using TRMApi.Models;
 using TRMDataAccessLibrary.DataAccess;
 using TRMDataAccessLibrary.Models;
 
@@ -24,6 +24,18 @@ namespace TRMApi.Controllers
         public List<ProductModel> GetAllProducts()
         {
             return _productData.GetAllProducts();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateProduct(CreateProductModel product)
+        {
+            if (ModelState.IsValid)
+            {
+                _productData.CreateProduct(product);
+                return Ok();
+            }
+
+            return BadRequest();
         }
     }
 }

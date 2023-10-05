@@ -2,9 +2,15 @@
 @inject IProductEndpoint ProductEndpoint
 @inject IConfiguration Config
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject NavigationManager navManager
 @attribute [Authorize(Roles = "Cashier")]
 
 <h3>Products</h3>
+
+<div class="col-auto">
+    <button type="button" class="btn btn-primary btn-success" @onclick=GoToNewProductForm>Add new</button>
+</div>
+
 <div class="container-fluid">
     @if(products is null)
     {
@@ -83,5 +89,10 @@
                 Console.WriteLine(ex.Message);
             }
         }
+    }
+
+    private void GoToNewProductForm()
+    {
+        navManager.NavigateTo("/products/add");
     }
 }

@@ -1,0 +1,120 @@
+﻿@page "/products/add"
+@inject IProductEndpoint ProductEndpoint
+@inject IConfiguration Config
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject NavigationManager navManager
+@attribute [Authorize(Roles = "Cashier")]
+
+<h3>Add New Product</h3>
+
+<EditForm Model="@model" OnValidSubmit="ExecuteAddProduct">
+    <DataAnnotationsValidator />
+
+    <div class="form-group row">
+        <label for="product-name" class="col-md-2 col-form-label">Product name:</label>
+        <div class="col-md-10">
+            <InputText id="product-name" class="form-control" @bind-Value="model.ProductName" />
+            <ValidationMessage For="@(() => model.ProductName)" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="last-name" class="col-md-2 col-form-label">Description:</label>
+        <div class="col-md-10">
+            <InputText id="last-name" class="form-control" @bind-Value="model.Description" />
+            <ValidationMessage For="@(() => model.Description)" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="email" class="col-md-2 col-form-label">Price:</label>
+        <div class="col-md-10">
+            <InputNumber id="retail-price" class="form-control" @bind-Value="model.RetailPrice" />
+            <ValidationMessage For="@(() => model.RetailPrice)" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="password" class="col-md-2 col-form-label">Quantity:</label>
+        <div class="col-md-10">
+            <InputNumber id="quantity-in-stock" class="form-control" @bind-Value="model.QuantityInStock" />
+            <ValidationMessage For="@(() => model.QuantityInStock)" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="confirm-password" class="col-md-2 col-form-label">Taxable?:</label>
+        <div class="col-md-10">
+            <InputCheckbox type="checkbox" id="is-taxable" class="form-check-input from-control" @bind-Value="model.IsTaxable" />
+            <ValidationMessage For="@(() => model.IsTaxable)" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="confirm-password" class="col-md-2 col-form-label">Image url:</label>
+        <div class="col-md-10">
+            <InputText id="product-image" class="form-control" @bind-Value="model.ProductImage" />
+            <ValidationMessage For="@(() => model.ProductImage)" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 text-end p-2">
+            <button type="submit" class="btn btn-success">Create</button>
+        </div>
+    </div>
+</EditForm>
+
+@if (showError)
+{
+    <div class="row">
+        <div class="alert alert-danger p-2" role="alert">
+            @errorMessage
+        </div>
+    </div>
+}
+
+@if (showSuccess)
+{
+    <div class="row">
+        <div class="alert alert-success p-2" role="alert">
+            @successMessage
+        </div>
+    </div>
+}
+
+@code {
+    CreateProductModel model = new();
+
+    private bool showError = false;
+    private string errorMessage = "";
+
+    private bool showSuccess = false;
+    private string successMessage = "";
+
+    public async Task ExecuteAddProduct()
+    {
+        showError = false;
+        errorMessage = "";
+
+        showSuccess = false;
+        successMessage = "";
+
+        try
+        {
+            await ProductEndpoint.CreateProduct(model);
+            showSuccess = true;
+            successMessage = $"Added product {model.ProductName}!";
+            model.ProductName = "";
+            model.Description = "";
+            model.RetailPrice = 0;
+            model.QuantityInStock = 0;
+            model.ProductImage = "";
+        }
+        catch (Exception ex)
+        {
+            showError = true;
+            errorMessage = "Error occured while adding product. Please try again.";
+        }
+    }
+}

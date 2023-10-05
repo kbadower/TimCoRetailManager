@@ -23,5 +23,26 @@ namespace TRMDesktopUILibrary.Api
             var result = await _apiClient.GetAsync<List<ProductModel>>("/api/Product");
             return result;
         }
+
+        public async Task CreateProduct(CreateProductModel model)
+        {
+            var data = new
+            {
+                model.ProductName,
+                model.Description,
+                model.RetailPrice,
+                model.IsTaxable,
+                model.QuantityInStock,
+                model.ProductImage
+            };
+
+            using (HttpResponseMessage response = await _apiClient.ApiClient.PostAsJsonAsync("/api/Product", data))
+            {
+                if (response.IsSuccessStatusCode == false)
+                {
+                    throw new Exception(response.ReasonPhrase);
+                }
+            }
+        }
     }
 }

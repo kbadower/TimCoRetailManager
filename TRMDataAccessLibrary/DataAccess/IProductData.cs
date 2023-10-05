@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TRMApi.Models;
 using TRMDataAccessLibrary.Models;
 
 namespace TRMDataAccessLibrary.DataAccess
@@ -7,5 +8,6 @@ namespace TRMDataAccessLibrary.DataAccess
     {
         List<ProductModel> GetAllProducts();
         ProductModel GetProductById(int id);
+        void CreateProduct(CreateProductModel product);
     }
 }
