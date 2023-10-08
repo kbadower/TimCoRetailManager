@@ -44,5 +44,16 @@ namespace TRMDesktopUILibrary.Api
                 }
             }
         }
+
+        public async Task DeleteProdut(int id)
+        {
+            using (HttpResponseMessage response = await _apiClient.ApiClient.DeleteAsync("/api/Product?id=" + id))
+            {
+                if (response.IsSuccessStatusCode == false)
+                {
+                    throw new Exception(response.ReasonPhrase);
+                }
+            }
+        }
     }
 }

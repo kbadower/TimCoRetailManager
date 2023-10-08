@@ -1,9 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TRMApi.Models;
 using TRMDataAccessLibrary.Models;
 
@@ -42,6 +38,11 @@ namespace TRMDataAccessLibrary.DataAccess
                     model.IsTaxable,
                     model.ProductImage
                 }, "TRMData");
+        }
+
+        public void DeleteProduct(int id)
+        {
+            _da.SaveData("spProduct_Delete", new { Id = id }, "TRMData");
         }
     }
 }

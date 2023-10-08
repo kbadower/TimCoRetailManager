@@ -37,5 +37,19 @@ namespace TRMApi.Controllers
 
             return BadRequest();
         }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteProduct(int id)
+        {
+            try
+            {
+                _productData.DeleteProduct(id);
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
     }
 }
