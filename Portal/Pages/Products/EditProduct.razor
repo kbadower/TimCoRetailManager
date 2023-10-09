@@ -1,0 +1,150 @@
+﻿@page "/EditModal"
+@inject IProductEndpoint ProductEndpoint
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+
+@if (isModalVisible)
+{
+    <div class="modal fade show" tabindex="-1" role="dialog" style="display: block;">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content custom-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editing @model.ProductName</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick=Close></button>
+                </div>
+                <div class="modal-content">
+                    <EditForm Model="@model" OnValidSubmit="ExecuteEditProduct">
+                        <DataAnnotationsValidator />
+
+                        <div class="form-group row">
+                            <label for="product-name" class="col-md-2 col-form-label">Product name:</label>
+                            <div class="col-md-8">
+                                <InputText id="product-name" class="form-control" @bind-Value="model.ProductName" />
+                                <ValidationMessage For="@(() => model.ProductName)" />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="last-name" class="col-md-2 col-form-label">Description:</label>
+                            <div class="col-md-8">
+                                <InputText id="last-name" class="form-control" @bind-Value="model.Description" />
+                                <ValidationMessage For="@(() => model.Description)" />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="email" class="col-md-2 col-form-label">Price:</label>
+                            <div class="col-md-8">
+                                <InputNumber id="retail-price" class="form-control" @bind-Value="model.RetailPrice" />
+                                <ValidationMessage For="@(() => model.RetailPrice)" />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="password" class="col-md-2 col-form-label">Quantity:</label>
+                            <div class="col-md-8">
+                                <InputNumber id="quantity-in-stock" class="form-control" @bind-Value="model.QuantityInStock" />
+                                <ValidationMessage For="@(() => model.QuantityInStock)" />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="confirm-password" class="col-md-2 col-form-label">Taxable?:</label>
+                            <div class="col-md-8">
+                                <InputCheckbox type="checkbox" id="is-taxable" class="form-check-input from-control" @bind-Value="model.IsTaxable" />
+                                <ValidationMessage For="@(() => model.IsTaxable)" />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="confirm-password" class="col-md-2 col-form-label">Image url:</label>
+                            <div class="col-md-8">
+                                <InputText id="product-image" class="form-control" @bind-Value="model.ProductImage" />
+                                <ValidationMessage For="@(() => model.ProductImage)" />
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <div class="row">
+                                <div class="col-md-8 text-end p-2">
+                                    <button type="submit" class="btn btn-success">Save changes</button>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-8 text-end p-2">
+                                    <button class="btn btn-success" @onclick=Close>Close</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </EditForm>
+
+                    @if (showError)
+                    {
+                        <div class="row">
+                            <div class="alert alert-danger p-2" role="alert">
+                                @errorMessage
+                            </div>
+                        </div>
+                    }
+
+                    @if (showSuccess)
+                    {
+                        <div class="row">
+                            <div class="alert alert-success p-2" role="alert">
+                                @successMessage
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public ProductModel? model { get; set; }
+    private bool isModalVisible = false;
+
+    private bool showError = false;
+    private string errorMessage = "";
+
+    private bool showSuccess = false;
+    private string successMessage = "";
+
+    private void Close()
+    {
+        isModalVisible = false;
+        StateHasChanged();
+    }
+
+    public void Show()
+    {
+        isModalVisible = true;
+        StateHasChanged();
+    }
+
+    private const string localStorageProductsKey = "products";
+
+    public async Task ExecuteEditProduct()
+    {
+        showError = false;
+        errorMessage = "";
+
+        showSuccess = false;
+        successMessage = "";
+        try
+        {
+            await ProductEndpoint.UpdateProduct(model);
+            showSuccess = true;
+            successMessage = $"{model.ProductName} updated successfully!";
+            await localStorage.RemoveItemAsync(localStorageProductsKey);
+        }
+        catch
+        {
+            showError = true;
+            successMessage = "Error occurred, changes were not saved!";
+        }
+    }
+}

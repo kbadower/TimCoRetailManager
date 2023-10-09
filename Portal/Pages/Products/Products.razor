@@ -49,13 +49,14 @@
                             <div class="col-12">
                                 <p class="h5 mb-3"> @item.ProductName - $@item.RetailPrice</p>
                                 <CellDisplayTemplate>
-                                    <a class="oi oi-pencil" @onclick=GoToEditForm style="text-decoration: none;" href="javascript:void(0);"></a>
+                                    <a class="oi oi-pencil" @onclick="@(() => ShowEditModal(item))" style="text-decoration: none;" href="javascript:void(0);"></a>
                                     <a class="oi oi-x" @onclick="@(() => DeleteProduct(item.Id))" style="text-decoration: none;" href="javascript:void(0);"></a>
                                 </CellDisplayTemplate>
                             </div>
                         </div>
                     </div>
                 </div>
+                <EditProduct model="item" @ref="modals[item.Id]" />
             }
         </div>
     }
@@ -102,13 +103,15 @@
 
     private async Task DeleteProduct(int id)
     {
-        await ProductEndpoint.DeleteProdut(id);
+        await ProductEndpoint.DeleteProduct(id);
         await localStorage.RemoveItemAsync(localStorageProductsKey);
         await OnInitializedAsync();
     }
 
-    private void GoToEditForm()
+    private Dictionary<int, EditProduct> modals = new Dictionary<int, EditProduct>();
+
+    private void ShowEditModal(ProductModel model)
     {
-        throw new NotImplementedException();
+        modals[model.Id].Show();
     }
 }

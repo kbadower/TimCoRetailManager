@@ -7,7 +7,8 @@ namespace TRMDesktopUILibrary.Api
     public interface IProductEndpoint
     {
         Task CreateProduct(CreateProductModel model);
-        Task DeleteProdut(int id);
+        Task DeleteProduct(int id);
         Task<List<ProductModel>> GetAllProducts();
+        Task UpdateProduct(ProductModel model);
     }
 }

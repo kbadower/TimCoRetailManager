@@ -10,5 +10,6 @@ namespace TRMDataAccessLibrary.DataAccess
         ProductModel GetProductById(int id);
         void CreateProduct(CreateProductModel product);
         void DeleteProduct(int id);
+        void UpdateProduct(ProductModel model);
     }
 }

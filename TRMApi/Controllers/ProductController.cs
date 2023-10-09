@@ -51,5 +51,19 @@ namespace TRMApi.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateProduct(ProductModel product)
+        {
+            try
+            {
+                _productData.UpdateProduct(product);
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
     }
 }

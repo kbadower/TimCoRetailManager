@@ -44,5 +44,20 @@ namespace TRMDataAccessLibrary.DataAccess
         {
             _da.SaveData("spProduct_Delete", new { Id = id }, "TRMData");
         }
+
+        public void UpdateProduct(ProductModel model)
+        {
+            _da.SaveData("spProduct_Update",
+                new
+                {
+                    model.Id,
+                    model.ProductName,
+                    model.Description,
+                    model.RetailPrice,
+                    model.QuantityInStock,
+                    model.IsTaxable,
+                    model.ProductImage
+                }, "TRMData");
+        }
     }
 }
