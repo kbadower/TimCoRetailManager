@@ -91,7 +91,10 @@ namespace TRMDataAccessLibrary.DataAccess
 
                 foreach (var item in details)
                 {
+                    var productInfo = _productData.GetProductById(item.ProductId);
+                    productInfo.QuantityInStock -= item.Quantity;
                     item.SaleId = saleDBModel.Id;
+                    _da.SaveDataInTransaction("spProduct_Update", productInfo);
                     _da.SaveDataInTransaction("spSaleDetail_Insert", item);
                 }
 
